@@ -63,12 +63,12 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(str_username) || TextUtils.isEmpty(str_fullname) ||
                         TextUtils.isEmpty(str_email) ||TextUtils.isEmpty(str_password)) {
-                    Toast.makeText(RegisterActivity.this, "모든 항목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, R.string.toast_field_enter_all, Toast.LENGTH_SHORT).show();
                 } else if (str_password.length() < 6) {
-                    Toast.makeText(RegisterActivity.this, "비밀번호는 6자리 이상입니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, R.string.toast_password_length, Toast.LENGTH_SHORT).show();
                 } else {
                     mPd = new ProgressDialog(RegisterActivity.this);
-                    mPd.setMessage("잠시만 기달려주세요...");
+                    mPd.setMessage(getString(R.string.string_please_wait));
                     mPd.show();
                     register(str_username, str_fullname, str_email, str_password);
                 }
@@ -87,15 +87,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                             String userId = user.getUid();
 
-                            mReference = FirebaseDatabase.getInstance().getReference().child("App2_Users").child(userId);
+                            mReference = FirebaseDatabase.getInstance().getReference().child(getString(R.string.dbname_users)).child(userId);
 
                             HashMap<String, Object> userMap = new HashMap<>();
 
-                            userMap.put("id", userId);
-                            userMap.put("username", username.toLowerCase());
-                            userMap.put("fullname", fullname);
-                            userMap.put("bio", "");
-                            userMap.put("imageUrl", "https://firebasestorage.googleapis.com/v0/b/instagramcloneapp-839b2.appspot.com/o/avatar.jpeg?alt=media&token=ee90e77c-ab48-4280-8e53-3501abfe6770");
+                            userMap.put(getString(R.string.field_id), userId);
+                            userMap.put(getString(R.string.field_username), username.toLowerCase());
+                            userMap.put(getString(R.string.field_fullname), fullname);
+                            userMap.put(getString(R.string.field_bio), "");
+                            userMap.put(getString(R.string.field_imageUrl), getString(R.string.default_imageUrl));
 
                             mReference.setValue(userMap)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -111,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     });
                         } else {
                             mPd.dismiss();
-                            Toast.makeText(RegisterActivity.this, "회원가입에 실패하셨습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegisterActivity.this, R.string.toast_signup_failed, Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

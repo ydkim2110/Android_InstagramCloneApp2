@@ -1,4 +1,23 @@
 <resources>
-    <string name="app_name">InstagramCloneApp2</string>
+    <string name="app_name">Instagram2</string>
     <string name="title_activity_login">LoginActivity</string>
+
+    <!-- Firebase Database -->
+    <string name="dbname_users">App2_Users</string>
+    <string name="field_id">id</string>
+    <string name="field_username">username</string>
+    <string name="field_fullname">fullname</string>
+    <string name="field_bio">bio</string>
+    <string name="field_imageUrl">imageUrl</string>
+    <string name="default_imageUrl"><![CDATA[https://firebasestorage.googleapis.com/v0/b/instagramcloneapp-839b2.appspot.com/o/avatar.jpeg?alt=media&token=ee90e77c-ab48-4280-8e53-3501abfe6770]]></string>
+
+    <!-- String -->
+    <string name="string_please_wait">잠시만 기달려주세요...</string>
+    <string name="string_logging">로그인 중입니다.</string>
+
+    <!-- Toast Message -->
+    <string name="toast_login_failed">로그인에 실패했습니다.</string>
+    <string name="toast_signup_failed">회원가입에 실패하셨습니다.</string>
+    <string name="toast_password_length">비밀번호는 6자리 이상입니다.</string>
+    <string name="toast_field_enter_all">모든 항목을 입력해주세요.</string>
 </resources>

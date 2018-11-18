@@ -53,14 +53,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final ProgressDialog mPd = new ProgressDialog(LoginActivity.this);
-                mPd.setMessage("로그인 중입니다.");
+                mPd.setMessage(getString(R.string.string_logging));
                 mPd.show();
 
                 String str_email = mEmail.getText().toString();
                 String str_password = mPassword.getText().toString();
 
                 if (TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)) {
-                    Toast.makeText(LoginActivity.this, "모든 항목을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, getString(R.string.toast_field_enter_all), Toast.LENGTH_SHORT).show();
                 } else {
 
                     mAuth.signInWithEmailAndPassword(str_email, str_password)
@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         DatabaseReference mReference = FirebaseDatabase.getInstance().getReference()
-                                                .child("App2_Users")
+                                                .child(getString(R.string.dbname_users))
                                                 .child(mAuth.getCurrentUser().getUid());
 
                                         mReference.addValueEventListener(new ValueEventListener() {
@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     } else {
                                         mPd.dismiss();
-                                        Toast.makeText(LoginActivity.this, "로그인에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, R.string.toast_login_failed, Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
