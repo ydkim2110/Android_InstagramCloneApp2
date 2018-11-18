@@ -7,6 +7,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="home"/>
+        android:text="home"
+        android:id="@+id/home"/>
 
 </android.support.constraint.ConstraintLayout>
