@@ -35,5 +35,6 @@
     <string name="toast_upload_failed">업로드에 실패했습니다.</string>
     <string name="toast_image_select">이미지를 선택해 주세요.</string>
     <string name="storage_posts">app2_posts</string>
+    <string name="dbname_App2_Likes">Likes</string>
 
 </resources>
