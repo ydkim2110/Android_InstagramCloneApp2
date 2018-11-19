@@ -81,7 +81,7 @@ public class SearchFragment extends Fragment {
 
     private void searchUsers(String s) {
         Query query = FirebaseDatabase.getInstance().getReference(getString(R.string.dbname_users))
-                .orderByChild(getString(R.string.field_username))
+                .orderByChild(getString(R.string.field_user_username))
                 .startAt(s)
                 .endAt(s+"\uf8ff");
 

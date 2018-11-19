@@ -91,11 +91,11 @@ public class RegisterActivity extends AppCompatActivity {
 
                             HashMap<String, Object> userMap = new HashMap<>();
 
-                            userMap.put(getString(R.string.field_id), userId);
-                            userMap.put(getString(R.string.field_username), username.toLowerCase());
-                            userMap.put(getString(R.string.field_fullname), fullname);
-                            userMap.put(getString(R.string.field_bio), "");
-                            userMap.put(getString(R.string.field_imageUrl), getString(R.string.default_imageUrl));
+                            userMap.put(getString(R.string.field_user_id), userId);
+                            userMap.put(getString(R.string.field_user_username), username.toLowerCase());
+                            userMap.put(getString(R.string.field_user_fullname), fullname);
+                            userMap.put(getString(R.string.field_user_bio), "");
+                            userMap.put(getString(R.string.field_user_imageUrl), getString(R.string.default_user_imageUrl));
 
                             mReference.setValue(userMap)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {

@@ -90,26 +90,26 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     FirebaseDatabase.getInstance().getReference()
                             .child(mContext.getString(R.string.dbname_follow))
                             .child(mUser.getUid())
-                            .child(mContext.getString(R.string.string_following))
+                            .child(mContext.getString(R.string.field_follow_following))
                             .child(user.getId())
                             .setValue(true);
                     FirebaseDatabase.getInstance().getReference()
                             .child(mContext.getString(R.string.dbname_follow))
                             .child(user.getId())
-                            .child(mContext.getString(R.string.string_followers))
+                            .child(mContext.getString(R.string.field_follow_followers))
                             .child(mUser.getUid())
                             .setValue(true);
                 } else {
                     FirebaseDatabase.getInstance().getReference()
                             .child(mContext.getString(R.string.dbname_follow))
                             .child(mUser.getUid())
-                            .child(mContext.getString(R.string.string_following))
+                            .child(mContext.getString(R.string.field_follow_following))
                             .child(user.getId())
                             .removeValue();
                     FirebaseDatabase.getInstance().getReference()
                             .child(mContext.getString(R.string.dbname_follow))
                             .child(user.getId())
-                            .child(mContext.getString(R.string.string_followers))
+                            .child(mContext.getString(R.string.field_follow_followers))
                             .child(mUser.getUid())
                             .removeValue();
                 }
@@ -142,13 +142,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child(mContext.getString(R.string.dbname_follow))
                 .child(mUser.getUid())
-                .child(mContext.getString(R.string.string_following));
+                .child(mContext.getString(R.string.field_follow_following));
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.child(userid).exists()) {
-                    button.setText(mContext.getString(R.string.string_following));
+                    button.setText(mContext.getString(R.string.field_follow_following));
                 } else {
                     button.setText(mContext.getString(R.string.string_follow));
                 }

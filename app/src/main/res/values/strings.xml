@@ -4,26 +4,36 @@
 
     <!-- Firebase Database -->
     <string name="dbname_users">App2_Users</string>
+    <string name="field_user_id">id</string>
+    <string name="field_user_username">username</string>
+    <string name="field_user_fullname">fullname</string>
+    <string name="field_user_bio">bio</string>
+    <string name="field_user_imageUrl">imageUrl</string>
+    <string name="default_user_imageUrl"><![CDATA[https://firebasestorage.googleapis.com/v0/b/instagramcloneapp-839b2.appspot.com/o/avatar.jpeg?alt=media&token=ee90e77c-ab48-4280-8e53-3501abfe6770]]></string>
+
     <string name="dbname_follow">App2_Follow</string>
-    <string name="field_id">id</string>
-    <string name="field_username">username</string>
-    <string name="field_fullname">fullname</string>
-    <string name="field_bio">bio</string>
-    <string name="field_imageUrl">imageUrl</string>
-    <string name="default_imageUrl"><![CDATA[https://firebasestorage.googleapis.com/v0/b/instagramcloneapp-839b2.appspot.com/o/avatar.jpeg?alt=media&token=ee90e77c-ab48-4280-8e53-3501abfe6770]]></string>
+    <string name="field_follow_following">following</string>
+    <string name="field_follow_followers">followers</string>
+
+    <string name="dbname_posts">App2_Posts</string>
+    <string name="field_posts_post_id">post_id</string>
+    <string name="field_posts_post_image">post_image</string>
+    <string name="field_posts_description">description</string>
+    <string name="field_posts_publisher">publisher</string>
 
     <!-- String -->
     <string name="string_please_wait">잠시만 기달려주세요...</string>
     <string name="string_logging">로그인 중입니다.</string>
     <string name="string_follow">follow</string>
-    <string name="string_following">following</string>
-    <string name="string_followers">followers</string>
+    <string name="string_profile_id">profile_id</string>
 
     <!-- Toast Message -->
     <string name="toast_login_failed">로그인에 실패했습니다.</string>
     <string name="toast_signup_failed">회원가입에 실패하셨습니다.</string>
     <string name="toast_password_length">비밀번호는 6자리 이상입니다.</string>
     <string name="toast_field_enter_all">모든 항목을 입력해주세요.</string>
-    <string name="string_profile_id">profile_id</string>
+    <string name="toast_upload_failed">업로드에 실패했습니다.</string>
+    <string name="toast_image_select">이미지를 선택해 주세요.</string>
+    <string name="storage_posts">app2_posts</string>
 
 </resources>
