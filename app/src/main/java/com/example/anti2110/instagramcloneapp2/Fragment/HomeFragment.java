@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.anti2110.instagramcloneapp2.Adapter.PostAdapter;
@@ -40,11 +41,16 @@ public class HomeFragment extends Fragment {
 
     private List<String> mFollowingList;
 
+    private ProgressBar mProgressBar;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        mProgressBar = view.findViewById(R.id.progressBar);
+        mProgressBar.setVisibility(View.GONE);
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
@@ -91,6 +97,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void readPosts() {
+        mProgressBar.setVisibility(View.VISIBLE);
 
         DatabaseReference reference = FirebaseDatabase.getInstance()
                 .getReference("App2_Posts");
@@ -109,11 +116,12 @@ public class HomeFragment extends Fragment {
                 }
 
                 mAdapter.notifyDataSetChanged();
+                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                mProgressBar.setVisibility(View.GONE);
             }
         });
 
