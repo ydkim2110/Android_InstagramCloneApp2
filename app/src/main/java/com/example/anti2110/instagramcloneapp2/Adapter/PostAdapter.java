@@ -1,15 +1,19 @@
 package com.example.anti2110.instagramcloneapp2.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.anti2110.instagramcloneapp2.CommentsActivity;
 import com.example.anti2110.instagramcloneapp2.Model.Post;
 import com.example.anti2110.instagramcloneapp2.Model.User;
 import com.example.anti2110.instagramcloneapp2.R;
@@ -27,6 +31,8 @@ import java.util.List;
  * Created by anti2110 on 2018-11-19
  */
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
+
+    private static final String TAG = "PostAdapter";
 
     private Context mContext;
     private List<Post> mPostList;
@@ -66,19 +72,40 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
         isLiked(post.getPost_id(), viewHolder.mLike);
         nrLikes(viewHolder.mLikes, post.getPost_id());
+        getComments(post.getPost_id(), viewHolder.mComments);
 
         viewHolder.mLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (viewHolder.mLike.getTag().equals("like")) {
-                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_App2_Likes))
+                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_Likes))
                             .child(post.getPost_id())
                             .child(mFirebaseUser.getUid()).setValue(true);
                 } else {
-                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_App2_Likes))
+                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_Likes))
                             .child(post.getPost_id())
                             .child(mFirebaseUser.getUid()).removeValue();
                 }
+            }
+        });
+
+        viewHolder.mComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentsActivity.class);
+                intent.putExtra(CommentsActivity.EXTRA_POST_ID, post.getPost_id());
+                intent.putExtra(CommentsActivity.EXTRA_PUBLISHER_ID, post.getPublisher());
+                mContext.startActivity(intent);
+            }
+        });
+
+        viewHolder.mComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentsActivity.class);
+                intent.putExtra(CommentsActivity.EXTRA_POST_ID, post.getPost_id());
+                intent.putExtra(CommentsActivity.EXTRA_PUBLISHER_ID, post.getPublisher());
+                mContext.startActivity(intent);
             }
         });
 
@@ -110,12 +137,31 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         }
     }
 
+    private void getComments(String postId, final TextView comments) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
+                .child("App2_Comments").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                comments.setText("View All " + dataSnapshot.getChildrenCount() + " Comments.");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
     private void isLiked(String postId, final ImageView imageView) {
 
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_App2_Likes))
+                .child(mContext.getString(R.string.dbname_Likes))
                 .child(postId);
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -141,7 +187,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private void nrLikes(final TextView likes, String postId) {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_App2_Likes))
+                .child(mContext.getString(R.string.dbname_Likes))
                 .child(postId);
 
         reference.addValueEventListener(new ValueEventListener() {

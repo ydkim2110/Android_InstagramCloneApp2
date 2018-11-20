@@ -21,6 +21,15 @@
     <string name="field_posts_description">description</string>
     <string name="field_posts_publisher">publisher</string>
 
+    <string name="dbname_Likes">App2_Likes</string>
+
+    <string name="dbname_comments">App2_Comments</string>
+    <string name="field_comments_comment">comment</string>
+    <string name="field_comments_publisher">publisher</string>
+
+    <!-- Firebase Storage -->
+    <string name="storage_posts">app2_posts</string>
+
     <!-- String -->
     <string name="string_please_wait">잠시만 기달려주세요...</string>
     <string name="string_logging">로그인 중입니다.</string>
@@ -34,7 +43,9 @@
     <string name="toast_field_enter_all">모든 항목을 입력해주세요.</string>
     <string name="toast_upload_failed">업로드에 실패했습니다.</string>
     <string name="toast_image_select">이미지를 선택해 주세요.</string>
-    <string name="storage_posts">app2_posts</string>
-    <string name="dbname_App2_Likes">Likes</string>
+    <string name="toast_please_enter_message">메시지를 입력해 주세요.</string>
+
+    <!-- Toolbar -->
+    <string name="toolbar_title_comments">Comments</string>
 
 </resources>

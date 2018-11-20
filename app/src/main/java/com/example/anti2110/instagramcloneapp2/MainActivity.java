@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.anti2110.instagramcloneapp2.Adapter.CommentAdapter;
 import com.example.anti2110.instagramcloneapp2.Fragment.HomeFragment;
 import com.example.anti2110.instagramcloneapp2.Fragment.NotificationFragment;
 import com.example.anti2110.instagramcloneapp2.Fragment.ProfileFragment;
@@ -29,9 +30,22 @@ public class MainActivity extends AppCompatActivity {
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(mNavigationItemSelectedListener);
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new HomeFragment())
-                .commit();
+        Bundle intent = getIntent().getExtras();
+        if (intent != null) {
+            String publisher = intent.getString(CommentAdapter.EXTRA_PUBLISHER_ID);
+
+            SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+            editor.putString(getString(R.string.string_profile_id), publisher);
+            editor.apply();
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new ProfileFragment())
+                    .commit();
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new HomeFragment())
+                    .commit();
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mNavigationItemSelectedListener =
