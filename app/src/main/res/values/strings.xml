@@ -27,8 +27,11 @@
     <string name="field_comments_comment">comment</string>
     <string name="field_comments_publisher">publisher</string>
 
+    <string name="dbname_saves">App2_Saves</string>
+
     <!-- Firebase Storage -->
     <string name="storage_posts">app2_posts</string>
+    <string name="storage_uploads">App2_uploads</string>
 
     <!-- String -->
     <string name="string_please_wait">잠시만 기달려주세요...</string>
@@ -42,10 +45,20 @@
     <string name="toast_password_length">비밀번호는 6자리 이상입니다.</string>
     <string name="toast_field_enter_all">모든 항목을 입력해주세요.</string>
     <string name="toast_upload_failed">업로드에 실패했습니다.</string>
+    <string name="toast_upload_cancel">업로드를 취소했습니다.</string>
     <string name="toast_image_select">이미지를 선택해 주세요.</string>
     <string name="toast_please_enter_message">메시지를 입력해 주세요.</string>
 
+    <!-- Dialog Message -->
+    <string name="dialog_upload_message">업로드 중입니다.</string>
+
     <!-- Toolbar -->
     <string name="toolbar_title_comments">Comments</string>
+
+    <!-- Tag -->
+    <string name="tag_saved">saved</string>
+    <string name="tag_save">save</string>
+    <string name="tag_liked">liked</string>
+    <string name="tag_like">like</string>
 
 </resources>

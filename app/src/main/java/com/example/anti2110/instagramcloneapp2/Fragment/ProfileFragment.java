@@ -1,6 +1,7 @@
 package com.example.anti2110.instagramcloneapp2.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.anti2110.instagramcloneapp2.Adapter.MyFotoAdapter;
+import com.example.anti2110.instagramcloneapp2.EditProfileActivity;
 import com.example.anti2110.instagramcloneapp2.Model.Post;
 import com.example.anti2110.instagramcloneapp2.Model.User;
 import com.example.anti2110.instagramcloneapp2.R;
@@ -55,6 +57,13 @@ public class ProfileFragment extends Fragment {
     private MyFotoAdapter mMyFotoAdapter;
     private List<Post> mPostList;
 
+    private RecyclerView mRecyclerViewSaves;
+    private MyFotoAdapter mMyFotoAdapterSaves;
+    private List<Post> mPostListSaves;
+
+
+    private List<String> mMySaves;
+
 
     @Nullable
     @Override
@@ -65,7 +74,7 @@ public class ProfileFragment extends Fragment {
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         SharedPreferences preferences = getContext().getSharedPreferences("PREFS", Context.MODE_PRIVATE);
-        mProfileId = preferences.getString("profile_id", "none");
+        mProfileId = preferences.getString(getString(R.string.string_profile_id), "none");
 
         mImageProfile = view.findViewById(R.id.image_profile);
         mOptions = view.findViewById(R.id.options);
@@ -87,10 +96,22 @@ public class ProfileFragment extends Fragment {
         mMyFotoAdapter = new MyFotoAdapter(getContext(), mPostList);
         mRecyclerView.setAdapter(mMyFotoAdapter);
 
+        mRecyclerViewSaves = view.findViewById(R.id.recycler_view_save);
+        mRecyclerViewSaves.setHasFixedSize(true);
+        LinearLayoutManager linearLayoutManagerSaves = new GridLayoutManager(getContext(), 3);
+        mRecyclerViewSaves.setLayoutManager(linearLayoutManagerSaves);
+        mPostListSaves = new ArrayList<>();
+        mMyFotoAdapterSaves = new MyFotoAdapter(getContext(), mPostListSaves);
+        mRecyclerViewSaves.setAdapter(mMyFotoAdapterSaves);
+
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mRecyclerViewSaves.setVisibility(View.GONE);
+
         userInfo();
         getFollowers();
         getNrPosts();
         myFotos();
+        mySaves();
 
         if (mProfileId.equals(mFirebaseUser.getUid())) {
             mEditProfile.setText("Edit Profile");
@@ -105,8 +126,7 @@ public class ProfileFragment extends Fragment {
                 String btn = mEditProfile.getText().toString();
 
                 if (btn.equals("Edit Profile")) {
-                    // go to EditProfile
-
+                    startActivity(new Intent(getActivity(), EditProfileActivity.class));
                 } else if (btn.equals("follow")) {
 
                     FirebaseDatabase.getInstance().getReference()
@@ -138,6 +158,22 @@ public class ProfileFragment extends Fragment {
                             .removeValue();
 
                 }
+            }
+        });
+
+        mMyFotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecyclerView.setVisibility(View.VISIBLE);
+                mRecyclerViewSaves.setVisibility(View.GONE);
+            }
+        });
+
+        mSavedFotos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mRecyclerView.setVisibility(View.GONE);
+                mRecyclerViewSaves.setVisibility(View.VISIBLE);
             }
         });
 
@@ -291,6 +327,57 @@ public class ProfileFragment extends Fragment {
 
     }
 
+    private void mySaves() {
+
+        mMySaves = new ArrayList<>();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("App2_Saves")
+                .child(mFirebaseUser.getUid());
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    mMySaves.add(snapshot.getKey());
+                }
+
+                readSaves();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void readSaves() {
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("App2_Posts");
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mPostListSaves.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = snapshot.getValue(Post.class);
+
+                    for (String id : mMySaves) {
+                        if (post.getPost_id().equals(id)) {
+                            mPostListSaves.add(post);
+                        }
+                    }
+                }
+                mMyFotoAdapterSaves.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
 }

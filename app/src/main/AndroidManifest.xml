@@ -28,6 +28,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".PostActivity" />
         <activity android:name=".CommentsActivity" />
+        <activity android:name=".EditProfileActivity"></activity>
     </application>
 
 </manifest>

@@ -1,14 +1,18 @@
 package com.example.anti2110.instagramcloneapp2.Adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.example.anti2110.instagramcloneapp2.Fragment.PostDetailFragment;
 import com.example.anti2110.instagramcloneapp2.Model.Post;
 import com.example.anti2110.instagramcloneapp2.R;
 
@@ -32,7 +36,7 @@ public class MyFotoAdapter extends RecyclerView.Adapter<MyFotoAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-
+        Log.d(TAG, "onCreateViewHolder: started.");
         View view = LayoutInflater.from(mContext).inflate(R.layout.fotos_item, viewGroup, false);
 
         return new ViewHolder(view);
@@ -42,9 +46,22 @@ public class MyFotoAdapter extends RecyclerView.Adapter<MyFotoAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
 
-        Post post = mPostList.get(i);
+        final Post post = mPostList.get(i);
 
         Glide.with(mContext).load(post.getPost_image()).into(viewHolder.mPostImage);
+
+        viewHolder.mPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
+                editor.putString("post_id", post.getPost_id());
+                editor.apply();
+
+                ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new PostDetailFragment())
+                        .commit();
+            }
+        });
 
     }
 
