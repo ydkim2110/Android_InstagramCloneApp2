@@ -35,7 +35,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anti2110 on 2018-11-18
@@ -61,8 +63,9 @@ public class ProfileFragment extends Fragment {
     private MyFotoAdapter mMyFotoAdapterSaves;
     private List<Post> mPostListSaves;
 
-
     private List<String> mMySaves;
+
+    private TextView mSignOut;
 
 
     @Nullable
@@ -70,6 +73,15 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        mSignOut = view.findViewById(R.id.singout);
+        mSignOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                getActivity().finish();
+            }
+        });
 
         mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -142,6 +154,8 @@ public class ProfileFragment extends Fragment {
                             .child(mFirebaseUser.getUid())
                             .setValue(true);
 
+                    addNotification();
+
                 }else if (btn.equals("following")) {
 
                     FirebaseDatabase.getInstance().getReference()
@@ -179,6 +193,23 @@ public class ProfileFragment extends Fragment {
 
         return view;
     }
+
+    private void addNotification() {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference("App2_Notifications")
+                .child(mProfileId);
+
+        Map<String, Object> notiMap = new HashMap<>();
+        notiMap.put("user_id", mFirebaseUser.getUid());
+        notiMap.put("comment", "started following you");
+        notiMap.put("post_id", "");
+        notiMap.put("is_post", false);
+
+        reference.push().setValue(notiMap);
+
+    }
+
 
     private void userInfo() {
 

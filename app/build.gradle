@@ -42,6 +42,8 @@ dependencies {
     api 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
 
     implementation 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    implementation 'id.zelory:compressor:2.1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

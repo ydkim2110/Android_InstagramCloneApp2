@@ -3,6 +3,7 @@ package com.example.anti2110.instagramcloneapp2;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -28,9 +30,13 @@ import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
+import id.zelory.compressor.Compressor;
 
 public class PostActivity extends AppCompatActivity {
 
@@ -44,6 +50,8 @@ public class PostActivity extends AppCompatActivity {
     private ImageView mClose, mImageAdded;
     private TextView mPost;
     private EditText mDescription;
+
+    private Bitmap compressedImageFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,12 +87,6 @@ public class PostActivity extends AppCompatActivity {
     }
 
     private String getFileExtension(Uri uri) {
-        ContentResolver contentResolver = getContentResolver();
-        MimeTypeMap mime = MimeTypeMap.getSingleton();
-        return mime.getExtensionFromMimeType(contentResolver.getType(uri));
-    }
-
-    private String getMimeType(Uri uri) {
         String extension;
 
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
@@ -99,12 +101,12 @@ public class PostActivity extends AppCompatActivity {
 
     private void uploadImage() {
         final ProgressDialog pd = new ProgressDialog(this);
-        pd.setMessage("Posting");
+        pd.setMessage(getString(R.string.dialog_upload_post_message));
         pd.show();
 
         if (mImageUri != null) {
             final StorageReference fileReference = mStorageReference.child(System.currentTimeMillis() + "."
-                    + getMimeType(mImageUri));
+                    + getFileExtension(mImageUri));
 
             mUploadTask = fileReference.putFile(mImageUri);
 
@@ -122,6 +124,9 @@ public class PostActivity extends AppCompatActivity {
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Log.d(TAG, "onComplete: getDownloadUrl: " + task.getResult().toString());
+
+                        saveCompressedImageFile();
+
                         Uri downloadUri = task.getResult();
                         mMyUrl = downloadUri.toString();
 
@@ -154,6 +159,37 @@ public class PostActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, R.string.toast_image_select, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void saveCompressedImageFile() {
+        File newImageFile = new File(mImageUri.getPath());
+
+        try {
+            compressedImageFile = new Compressor(PostActivity.this)
+                    .setMaxWidth(200)
+                    .setMaxHeight(200)
+                    .setQuality(10)
+                    .compressToBitmap(newImageFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] thumbData = baos.toByteArray();
+
+        final StorageReference reference =  FirebaseStorage.getInstance().getReference("App2_posts_compressed")
+                .child(System.currentTimeMillis() + ".jpg");
+
+        final UploadTask uploadTask = reference.putBytes(thumbData);
+
+        uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Toast.makeText(PostActivity.this, "압축 저장 성공!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override

@@ -29,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by anti2110 on 2018-11-19
@@ -83,7 +85,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                editor.putString("profile_id", post.getPublisher());
+                editor.putString(mContext.getString(R.string.string_profile_id), post.getPublisher());
                 editor.apply();
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
@@ -96,7 +98,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                editor.putString("profile_id", post.getPublisher());
+                editor.putString(mContext.getString(R.string.string_profile_id), post.getPublisher());
                 editor.apply();
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
@@ -109,7 +111,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                editor.putString("profile_id", post.getPublisher());
+                editor.putString(mContext.getString(R.string.string_profile_id), post.getPublisher());
                 editor.apply();
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
@@ -122,7 +124,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
-                editor.putString("post_id", post.getPost_id());
+                editor.putString(mContext.getString(R.string.string_post_id), post.getPost_id());
                 editor.apply();
 
                 ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction()
@@ -149,7 +151,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             }
         });
 
-
         viewHolder.mLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +158,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                     FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_Likes))
                             .child(post.getPost_id())
                             .child(mFirebaseUser.getUid()).setValue(true);
+
+                    addNotification(post.getPublisher(), post.getPost_id());
                 } else {
                     FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_Likes))
                             .child(post.getPost_id())
@@ -258,6 +261,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
 
             }
         });
+
+    }
+
+    private void addNotification(String userId, String postId) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference(mContext.getString(R.string.dbname_notifications))
+                .child(userId);
+
+        Map<String, Object> notiMap = new HashMap<>();
+        notiMap.put(mContext.getString(R.string.field_notifications_user_id), mFirebaseUser.getUid());
+        notiMap.put(mContext.getString(R.string.field_notifications_comment), mContext.getString(R.string.string_notifications_liked_your_post));
+        notiMap.put(mContext.getString(R.string.field_notifications_post_id), postId);
+        notiMap.put(mContext.getString(R.string.field_notifications_is_post), true);
+
+        reference.push().setValue(notiMap);
 
     }
 

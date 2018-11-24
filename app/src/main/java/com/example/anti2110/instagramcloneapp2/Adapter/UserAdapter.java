@@ -23,7 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -37,7 +39,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context mContext;
     private List<User> mUserList;
 
-    private FirebaseUser mUser;
+    private FirebaseUser mFirebaseUser;
 
     public UserAdapter(Context context, List<User> userList) {
         mContext = context;
@@ -54,7 +56,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int i) {
-        mUser = FirebaseAuth.getInstance().getCurrentUser();
+        mFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         final User user = mUserList.get(i);
 
@@ -66,7 +68,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         isFollowing(user.getId(), viewHolder.mBtnFollow);
 
-        if (user.getId().equals(mUser.getUid())) {
+        if (user.getId().equals(mFirebaseUser.getUid())) {
             viewHolder.mBtnFollow.setVisibility(View.GONE);
         }
 
@@ -89,7 +91,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 if (viewHolder.mBtnFollow.getText().toString().equals(mContext.getString(R.string.string_follow))) {
                     FirebaseDatabase.getInstance().getReference()
                             .child(mContext.getString(R.string.dbname_follow))
-                            .child(mUser.getUid())
+                            .child(mFirebaseUser.getUid())
                             .child(mContext.getString(R.string.field_follow_following))
                             .child(user.getId())
                             .setValue(true);
@@ -97,12 +99,14 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             .child(mContext.getString(R.string.dbname_follow))
                             .child(user.getId())
                             .child(mContext.getString(R.string.field_follow_followers))
-                            .child(mUser.getUid())
+                            .child(mFirebaseUser.getUid())
                             .setValue(true);
+
+                    addNotification(user.getId());
                 } else {
                     FirebaseDatabase.getInstance().getReference()
                             .child(mContext.getString(R.string.dbname_follow))
-                            .child(mUser.getUid())
+                            .child(mFirebaseUser.getUid())
                             .child(mContext.getString(R.string.field_follow_following))
                             .child(user.getId())
                             .removeValue();
@@ -110,11 +114,27 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                             .child(mContext.getString(R.string.dbname_follow))
                             .child(user.getId())
                             .child(mContext.getString(R.string.field_follow_followers))
-                            .child(mUser.getUid())
+                            .child(mFirebaseUser.getUid())
                             .removeValue();
                 }
             }
         });
+    }
+
+    private void addNotification(String userId) {
+
+        DatabaseReference reference = FirebaseDatabase.getInstance()
+                .getReference(mContext.getString(R.string.dbname_notifications))
+                .child(userId);
+
+        Map<String, Object> notiMap = new HashMap<>();
+        notiMap.put(mContext.getString(R.string.field_notifications_user_id), mFirebaseUser.getUid());
+        notiMap.put(mContext.getString(R.string.field_notifications_comment), mContext.getString(R.string.string_notifications_started_following_you));
+        notiMap.put(mContext.getString(R.string.field_notifications_post_id), "");
+        notiMap.put(mContext.getString(R.string.field_notifications_is_post), false);
+
+        reference.push().setValue(notiMap);
+
     }
 
     @Override
@@ -141,7 +161,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private void isFollowing(final String userid, final Button button) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
                 .child(mContext.getString(R.string.dbname_follow))
-                .child(mUser.getUid())
+                .child(mFirebaseUser.getUid())
                 .child(mContext.getString(R.string.field_follow_following));
 
         reference.addValueEventListener(new ValueEventListener() {
