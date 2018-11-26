@@ -6,16 +6,15 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.anti2110.instagramcloneapp2.CommentsActivity;
+import com.example.anti2110.instagramcloneapp2.FollowersActivity;
 import com.example.anti2110.instagramcloneapp2.Fragment.PostDetailFragment;
 import com.example.anti2110.instagramcloneapp2.Fragment.ProfileFragment;
 import com.example.anti2110.instagramcloneapp2.Model.Post;
@@ -54,7 +53,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.post_item, viewGroup, false);
-
 
         return new ViewHolder(view);
     }
@@ -155,13 +153,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
             @Override
             public void onClick(View view) {
                 if (viewHolder.mLike.getTag().equals(mContext.getString(R.string.tag_like))) {
-                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_Likes))
+                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_likes))
                             .child(post.getPost_id())
                             .child(mFirebaseUser.getUid()).setValue(true);
 
                     addNotification(post.getPublisher(), post.getPost_id());
                 } else {
-                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_Likes))
+                    FirebaseDatabase.getInstance().getReference().child(mContext.getString(R.string.dbname_likes))
                             .child(post.getPost_id())
                             .child(mFirebaseUser.getUid()).removeValue();
                 }
@@ -184,6 +182,16 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
                 Intent intent = new Intent(mContext, CommentsActivity.class);
                 intent.putExtra(CommentsActivity.EXTRA_POST_ID, post.getPost_id());
                 intent.putExtra(CommentsActivity.EXTRA_PUBLISHER_ID, post.getPublisher());
+                mContext.startActivity(intent);
+            }
+        });
+
+        viewHolder.mLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext , FollowersActivity.class);
+                intent.putExtra(FollowersActivity.EXTRA_ID, post.getPost_id());
+                intent.putExtra(FollowersActivity.EXTRA_TITLE, "likes");
                 mContext.startActivity(intent);
             }
         });
@@ -241,7 +249,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
         final FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_Likes))
+                .child(mContext.getString(R.string.dbname_likes))
                 .child(postId);
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -283,7 +291,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.ViewHolder> {
     private void nrLikes(final TextView likes, String postId) {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference()
-                .child(mContext.getString(R.string.dbname_Likes))
+                .child(mContext.getString(R.string.dbname_likes))
                 .child(postId);
 
         reference.addValueEventListener(new ValueEventListener() {

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.anti2110.instagramcloneapp2.Adapter.MyFotoAdapter;
 import com.example.anti2110.instagramcloneapp2.EditProfileActivity;
+import com.example.anti2110.instagramcloneapp2.FollowersActivity;
 import com.example.anti2110.instagramcloneapp2.Model.Post;
 import com.example.anti2110.instagramcloneapp2.Model.User;
 import com.example.anti2110.instagramcloneapp2.R;
@@ -70,7 +71,7 @@ public class ProfileFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: started.");
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -188,6 +189,26 @@ public class ProfileFragment extends Fragment {
             public void onClick(View view) {
                 mRecyclerView.setVisibility(View.GONE);
                 mRecyclerViewSaves.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mFollowers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FollowersActivity.class);
+                intent.putExtra(FollowersActivity.EXTRA_ID, mProfileId);
+                intent.putExtra(FollowersActivity.EXTRA_TITLE, "followers");
+                startActivity(intent);
+            }
+        });
+
+        mFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FollowersActivity.class);
+                intent.putExtra(FollowersActivity.EXTRA_ID, mProfileId);
+                intent.putExtra(FollowersActivity.EXTRA_TITLE, "following");
+                startActivity(intent);
             }
         });
 

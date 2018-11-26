@@ -21,7 +21,7 @@
     <string name="field_posts_description">description</string>
     <string name="field_posts_publisher">publisher</string>
 
-    <string name="dbname_Likes">App2_Likes</string>
+    <string name="dbname_likes">App2_Likes</string>
 
     <string name="dbname_comments">App2_Comments</string>
     <string name="field_comments_comment">comment</string>
